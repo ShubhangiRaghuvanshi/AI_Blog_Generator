@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+AI Blog Generator
+This is a Next.js project that generates AI-powered blog posts based on user-provided keywords.
 
-## Getting Started
+ Getting Started
+To run the project locally, follow these steps:
 
-First, run the development server:
+Clone the repository:
 
-```bash
+sh
+Copy
+Edit
+git clone https://github.com/ShubhangiRaghuvanshi/AI_Blog_Generator.git
+cd AI_Blog_Generator
+Install dependencies:
+
+sh
+Copy
+Edit
+npm install
+Start the development server:
+
+sh
+Copy
+Edit
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000 in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+✨ Features
+Generate AI-powered blog articles based on keywords.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Beautifully styled blog page with dynamic content.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Uses Unsplash API for fetching related images.
 
-## Learn More
+Fully responsive design.
 
-To learn more about Next.js, take a look at the following resources:
+ Tech Stack
+Next.js - React framework for server-side rendering.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Tailwind CSS - Utility-first CSS framework for styling.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Unsplash API - Fetches images based on blog content.
 
-## Deploy on Vercel
+OpenAI API (or another AI service) - Generates blog content dynamically.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+How to Contribute
+Fork the repository.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a new branch:
+
+sh
+Copy
+Edit
+git checkout -b feature-new-blog-style
+Make your changes and commit them:
+
+sh
+Copy
+Edit
+git commit -m "Added new styling to blog page"
+Push your changes:
+
+sh
+Copy
+Edit
+git push origin feature-new-blog-style
+Open a Pull Request (PR) on GitHub.
+
+ Deployment
+The project can be deployed easily on Vercel:
+
+sh
+Copy
+Edit
+vercel deploy
+Check out Next.js Deployment Docs for more details.
+
+Once you've updated README.md, commit and push it:
+
+sh
+Copy
+Edit
+git add README.md
+git commit -m "Updated README with project details"
+git push origin main
