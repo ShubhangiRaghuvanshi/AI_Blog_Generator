@@ -1,3 +1,6 @@
+feature-update
+"# AI Blog Generator" 
+
 AI Blog Generator
 This is a Next.js project that generates AI-powered blog posts based on user-provided keywords.
 
@@ -83,3 +86,4 @@ Edit
 git add README.md
 git commit -m "Updated README with project details"
 git push origin main
+main
