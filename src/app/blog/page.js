@@ -1,5 +1,4 @@
 "use client";
-
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
@@ -35,29 +34,25 @@ const BlogContent = () => {
         setLoading(false);
         return;
       }
-
+  
       setLoading(true);
       try {
         const response = await fetch(
           `/api/generate?keywords=${encodeURIComponent(keywords)}&subheadings=${subheadings}&words=${words}`
         );
-
+  
         if (!response.ok) {
           throw new Error(`HTTP Error! Status: ${response.status}`);
         }
-
+  
         const data = await response.json();
-        console.log("🔍 API Response:", data);
-
-        if (data.blog && Array.isArray(data.blog.sections)) {
-          setBlog({
-            title: data.blog.title || "Generated Blog",
-            metadata: data.blog.metadata || "No metadata available",
-            sections: data.blog.sections.length ? data.blog.sections : [],
-          });
+        console.log("🔍 API Response:", data);  // Debugging API response
+  
+        if (data?.blog?.sections?.length) {
+          setBlog(data.blog);
         } else {
-          setBlog({ title: "Generated Blog", metadata: "", sections: [] });
-          setError("No content available.");
+          setBlog({ title: "Generated Blog", metadata: "No metadata available", sections: [] });
+          setError("No content generated or invalid response structure.");
         }
       } catch (error) {
         console.error("❌ Error fetching blog:", error);
@@ -66,12 +61,12 @@ const BlogContent = () => {
       }
       setLoading(false);
     };
-
+  
     fetchBlog();
   }, [keywords, subheadings, words]);
 
   if (loading) {
-    return <p className="text-center text-2xl text-gray-700 mt-16">Loading...</p>;
+    return <p className="text-center text-2xl text-gray-700 mt-16">Loading blog content...</p>;
   }
 
   if (error) {
@@ -94,16 +89,6 @@ const BlogContent = () => {
           {blog?.sections.length > 0 ? (
             blog.sections.map((section, index) => (
               <div key={index} className="mb-10">
-                {/* Image */}
-                {section.image && (
-                  <img
-                    src={section.image}
-                    alt={section.subheading}
-                    loading="lazy"
-                    className="w-full rounded-xl shadow-md mb-4 object-cover max-h-[300px]"
-                  />
-                )}
-
                 {/* Subheading */}
                 <h2 className="text-4xl font-bold mt-6 mb-4 text-gray-900 border-l-4 border-gray-600 pl-4 font-serif">
                   {section.subheading || "Untitled Section"}
@@ -113,6 +98,9 @@ const BlogContent = () => {
                 <p className="text-lg leading-8 font-serif">
                   {section.content || "No content available."}
                 </p>
+
+                {/* Unsplash Image */}
+                <img src={section.image || "https://via.placeholder.com/800"} alt={section.subheading || "Section Image"} className="mt-6 w-full h-auto object-cover rounded-lg" />
               </div>
             ))
           ) : (

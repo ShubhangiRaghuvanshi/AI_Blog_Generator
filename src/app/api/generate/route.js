@@ -16,52 +16,57 @@ async function generateBlogContent(keywords, subheadings, words) {
           parts: [
             {
               text: `Generate a structured blog post on '${keywords}' with ${subheadings} subheadings and around ${words} words.
-              
-              Format:
-              Title: [Generated Title]
-              Metadata: [Short summary with date]
-              
-              Sections:
-              - [Subheading 1]
-                [Detailed content]
-              - [Subheading 2]
-                [Detailed content]
-              
-              Ensure proper readability, coherence, and informative tone.`
+               Format:
+               Title: [Generated Title]
+               Metadata: [Short summary with date]
+               Sections:
+               - [Subheading 1]
+                 [Detailed content]
+               - [Subheading 2]
+                 [Detailed content]
+               Ensure proper readability, coherence, and informative tone.`
             }
           ]
         }
       ]
     });
 
-    console.log("🔍 AI API Response:", JSON.stringify(response, null, 2));
+    console.log("🔍 Full AI API Response:", JSON.stringify(response, null, 2));
 
-    // ✅ Extract Text from Response
     const blogText = response?.candidates?.[0]?.content?.parts?.map(part => part.text).join("\n").trim() || "";
     console.log("🔍 Blog Text:", blogText);
 
     if (!blogText) return null;
 
-    // ✅ Parse Blog Content into Structured Sections
     const lines = blogText.split("\n").map((line) => line.trim()).filter(Boolean);
+    console.log("🔍 Split Lines:", lines);
+
     let title = "Generated Blog";
     let metadata = `Generated on ${new Date().toLocaleDateString()}`;
     let sections = [];
     let currentSection = null;
 
     for (let line of lines) {
+      console.log("🔍 Processing Line:", line); // Log each line to debug
+
       if (line.startsWith("Title:")) {
         title = line.replace("Title:", "").trim();
       } else if (line.startsWith("Metadata:")) {
         metadata = line.replace("Metadata:", "").trim();
-      } else if (/^[-•]/.test(line)) {
+      } else if (/^(##|\*\*|[-•])/.test(line)) {  // Handle markdown-style subheadings (##, **, -)
         if (currentSection) sections.push(currentSection);
-        currentSection = { subheading: line.replace(/^[-•]/, "").trim(), content: "" };
+        currentSection = { subheading: line.replace(/^(\*\*|##|[-•])/, "").trim(), content: "" };
       } else if (currentSection) {
         currentSection.content += line + " ";
       }
     }
+
     if (currentSection) sections.push(currentSection);
+
+    if (!sections.length) {
+      console.error("❌ No valid sections generated.");
+      return null;
+    }
 
     return { title, metadata, sections };
   } catch (error) {
