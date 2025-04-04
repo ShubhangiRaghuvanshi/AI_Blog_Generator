@@ -75,25 +75,22 @@ async function generateBlogContent(keywords, subheadings, words) {
   }
 }
 
-// ✅ Function to Fetch Unsplash Images
-async function fetchUnsplashImages(sections) {
-  const imageRequests = sections.map(async (section) => {
-    const url = `https://api.unsplash.com/photos/random?query=${encodeURIComponent(
-      section.subheading
-    )}&client_id=${UNSPLASH_ACCESS_KEY}`;
+// ✅ Function to Fetch Unsplash Images Based on Keywords and First 50 Characters of Content
+async function fetchUnsplashImages(keywords, content) {
+  const query = `${keywords} ${content.substring(0, 50)}`; // Combine keywords with first 50 chars of content
+  const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1`;
 
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`Unsplash API Error: ${response.status}`);
-      const data = await response.json();
-      return data.urls?.regular || DEFAULT_IMAGE;
-    } catch (error) {
-      console.error("❌ Error fetching Unsplash image:", error);
-      return DEFAULT_IMAGE;
-    }
-  });
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Unsplash API Error: ${response.status}`);
+    const data = await response.json();
 
-  return Promise.all(imageRequests);
+    // If the search returns any images, return the first result's URL, else fallback to default image
+    return data.results?.[0]?.urls?.regular || DEFAULT_IMAGE;
+  } catch (error) {
+    console.error("❌ Error fetching Unsplash image:", error);
+    return DEFAULT_IMAGE; // Fallback to placeholder image if there's an error
+  }
 }
 
 // ✅ API Route Handler
@@ -115,8 +112,15 @@ export async function GET(req) {
       return NextResponse.json({ message: "Failed to generate blog content." }, { status: 500 });
     }
 
-    console.log("🔹 Fetching Unsplash images...");
-    const images = await fetchUnsplashImages(blog.sections);
+    console.log("🔹 Fetching Unsplash images based on keywords and content...");
+    
+    // Fetch an image for each section based on both keywords and content
+    const images = await Promise.all(blog.sections.map(async (section) => {
+      const image = await fetchUnsplashImages(keywords, section.content); // Fetching images for each section based on keywords and first 50 chars of content
+      return image;
+    }));
+
+    // Attach the images to the sections
     blog.sections = blog.sections.map((section, index) => ({
       ...section,
       image: images[index] || DEFAULT_IMAGE,
@@ -129,3 +133,4 @@ export async function GET(req) {
     return NextResponse.json({ message: "Server error." }, { status: 500 });
   }
 }
+
